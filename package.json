@@ -15,7 +15,7 @@
     "type": "git",
     "url": "git+https://github.com/coobr01/cf-nodejs-s3-example.git"
   },
-  "author": "Brad Cooper (coobr01@yahoo.com)",
+  "author": "Brad Cooper",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/coobr01/cf-nodejs-s3-example/issues"
