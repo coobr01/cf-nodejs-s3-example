@@ -10,4 +10,5 @@ This example was created to show how to use the [AWS SDK for JavaScript in Node.
 - Once deployed, check the log file of the application to see the hyperlink to the example s3 file
   - `cf logs cf-nodejs-s3-example --recent`
   
+  ![console log image](https://github.com/coobr01/cf-nodejs-s3-example/blob/master/docs/images/logfile.png "console log image")
   
