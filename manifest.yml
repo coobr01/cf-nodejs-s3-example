@@ -1,0 +1,17 @@
+---
+ applications:
+   - name: cf-nodejs-s3-example
+     instances: 1
+     memory: 128MB
+     disk_quota: 256MB
+     timeout: 180
+     buildpacks:
+      - nodejs_buildpack
+     command: node app/index.js
+     path: /
+     env:
+        NODE_ENV: development
+        LOGGER_LEVEL: DEBUG
+        OPTIMIZE_MEMORY: true
+     services:
+      - lookforwatersense-s3
