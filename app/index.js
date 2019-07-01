@@ -4,6 +4,7 @@ var port = process.env.PORT || 3000;
 
 // Load the AWS SDK for Node.js
 var AWS = require("aws-sdk");
+var s3;
 
 var s3_vcap_services;
 var s3_access_key_id;
@@ -44,7 +45,12 @@ if (s3_access_key_id != "") {
   var bucketParams = {
     Bucket: s3_bucket
   };
+}
 
+/*************************************************************
+ *
+ ************************************************************/
+async function creates3File(res) {
   let s3Objects;
 
   async function listObjs(notes) {
@@ -81,14 +87,77 @@ if (s3_access_key_id != "") {
   s3.upload(uploadParams, function(err, data) {
     if (err) {
       console.log("Upload Error", err);
+      res.write("Upload Error");
     }
     if (data) {
       console.log("Upload Success", data.Location);
+      res.setHeader("Content-Type", "text/html"); //or text/plain
+      res.write("<html><body>");
+      res.write("<a href='" + data.Location + "'>" + data.Location + "</a>");
+      res.write("</body></html>");
+      res.end();
     }
   });
 
   listObjs("#2");
 }
 
+/*************************************************************
+ *
+ ************************************************************/
+async function emptyBucket(res, bucketName) {
+  let currentData;
+  let params = {
+    Bucket: bucketName
+  };
+
+  return s3
+    .listObjects(params)
+    .promise()
+    .then(data => {
+      if (data.Contents.length === 0) {
+        console.log("s3 bucket is empty. The s3 service can be deleted.");
+        return;
+      }
+
+      currentData = data;
+
+      params = { Bucket: bucketName };
+      params.Delete = { Objects: [] };
+
+      currentData.Contents.forEach(content => {
+        params.Delete.Objects.push({ Key: content.Key });
+      });
+
+      return s3.deleteObjects(params).promise();
+    })
+    .then(() => {
+      if (currentData.Contents.length === 1000) {
+        emptyBucket(bucketName, callback);
+      } else {
+        return true;
+      }
+    })
+    .catch(() => {});
+}
+
 app.get("/", (req, res) => res.send("Cooper"));
+
+app.get("/createFile", async function(req, res) {
+  if (s3_access_key_id == "") {
+    console.log("s3 not properly setup to support this example application.");
+  } else {
+    await creates3File(res);
+  }
+});
+
+app.get("/emptyBucket", async function(req, res) {
+  if (s3_access_key_id == "") {
+    console.log("s3 not properly setup to support this example application.");
+  } else {
+    await emptyBucket(res, s3_bucket);
+  }
+  res.send("");
+});
+
 app.listen(port, () => console.log(`Application listening on port ${port}.`));
