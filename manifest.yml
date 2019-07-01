@@ -14,4 +14,4 @@
         LOGGER_LEVEL: DEBUG
         OPTIMIZE_MEMORY: true
      services:
-      - lookforwatersense-s3
+      - cf-nodejs-s3-example-s3
