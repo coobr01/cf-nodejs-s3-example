@@ -21,7 +21,7 @@
   },
   "homepage": "https://github.com/coobr01/cf-nodejs-s3-example#readme",
   "dependencies": {
-    "express": "^4.16.3",
+    "express": "^4.19.2",
     "aws-sdk": "^2.485.0"
   }
 }
